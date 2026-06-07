@@ -40,11 +40,11 @@ const JULIA = {
   rating:4.9, reviews:87, jobs:87, followers:892, following:145,
   verified:true,
   services:[
-    {id:"s1",icon:"🧹",name:"Aseo general",price:35000,cat:"limpieza",hours:3,desc:"Limpieza completa del hogar. Incluye cocina, bano, dormitorios y living.",myMaterials:["Aspiradora","Trapeador","Productos de limpieza","Guantes"],clientMaterials:[]},
-    {id:"s2",icon:"🎨",name:"Pinta caritas",price:12000,cat:"belleza",hours:2,desc:"Pintacaritas para fiestas infantiles. Disenos de animales, superheroes y princesas.",myMaterials:["Pinturas hipoalergenicas","Pinceles","Esponjas"],clientMaterials:[]},
-    {id:"s3",icon:"💄",name:"Maquillaje profesional",price:25000,cat:"belleza",hours:1,desc:"Maquillaje profesional a domicilio para eventos, graduaciones y ocasiones especiales.",myMaterials:["Kit de maquillaje profesional","Brochas","Fijadores"],clientMaterials:[]},
-    {id:"s4",icon:"🐾",name:"Cuidado de mascotas",price:15000,cat:"mascotas",hours:4,desc:"Cuidado diurno de mascotas en tu hogar. Alimentacion, paseos y compannia.",myMaterials:[],clientMaterials:["Comida del animal","Correa","Bolsas de desechos"]},
-    {id:"s5",icon:"🎨",name:"Asesoria de colorimetria",price:45000,cat:"belleza",hours:1.5,desc:"Asesoria personal de colorimetria. Descubre los colores que mejor te favorecen segun tu tono de piel.",myMaterials:["Muestras de telas","Guia de colores","Paleta de temporada"],clientMaterials:[]},
+    {id:"s1",icon:"🧹",name:"Aseo general",price:35000,cat:"limpieza",hours:3,earlyDiscount:{enabled:true,pct:10,minDays:2},desc:"Limpieza completa del hogar. Incluye cocina, bano, dormitorios y living.",myMaterials:["Aspiradora","Trapeador","Productos de limpieza","Guantes"],clientMaterials:[]},
+    {id:"s2",icon:"🎨",name:"Pinta caritas",price:12000,cat:"belleza",hours:2,earlyDiscount:{enabled:false,pct:10,minDays:3},desc:"Pintacaritas para fiestas infantiles. Disenos de animales, superheroes y princesas.",myMaterials:["Pinturas hipoalergenicas","Pinceles","Esponjas"],clientMaterials:[]},
+    {id:"s3",icon:"💄",name:"Maquillaje profesional",price:25000,cat:"belleza",hours:1,earlyDiscount:{enabled:true,pct:15,minDays:3},desc:"Maquillaje profesional a domicilio para eventos, graduaciones y ocasiones especiales.",myMaterials:["Kit de maquillaje profesional","Brochas","Fijadores"],clientMaterials:[]},
+    {id:"s4",icon:"🐾",name:"Cuidado de mascotas",price:15000,cat:"mascotas",hours:4,earlyDiscount:{enabled:false,pct:5,minDays:1},desc:"Cuidado diurno de mascotas en tu hogar. Alimentacion, paseos y compannia.",myMaterials:[],clientMaterials:["Comida del animal","Correa","Bolsas de desechos"]},
+    {id:"s5",icon:"🎨",name:"Asesoria de colorimetria",price:45000,cat:"belleza",hours:1.5,earlyDiscount:{enabled:true,pct:10,minDays:7},desc:"Asesoria personal de colorimetria. Descubre los colores que mejor te favorecen segun tu tono de piel.",myMaterials:["Muestras de telas","Guia de colores","Paleta de temporada"],clientMaterials:[]},
   ],
   highlights:[
     {id:"hl1",name:"Aseos",icon:"🧹",color:"#0EA5E9",stories:[
@@ -1053,7 +1053,7 @@ function ConfigureScreen({ matched, setS }) {
             <p style={{color:T.gray3,fontSize:13,margin:"0 0 20px"}}>Esto afecta el precio final</p>
             <div style={{display:"flex",gap:10,marginBottom:20}}>
               {[{k:"ahora",icon:"⚡",label:"Ahora",sub:"Recargo urgencia +30%",color:T.limeD},
-                {k:"programar",icon:"📅",label:"Programar",sub:"Descuento puntualidad -10%",color:"#1D4ED8"}
+                {k:"programar",icon:"📅",label:"Programar",sub:"Reserva anticipada -10%",color:"#1D4ED8"}
               ].map(m=>(
                 <div key={m.k} onClick={()=>{setModo(m.k);setExpressSurcharge(m.k==="ahora");}}
                   style={{flex:1,border:"2px solid "+(modo===m.k?T.lime:T.border),borderRadius:16,padding:"16px 12px",textAlign:"center",cursor:"pointer",background:modo===m.k?T.limeL:T.white}}>
@@ -1183,7 +1183,7 @@ function ConfigureScreen({ matched, setS }) {
                icon:"⚡", label:"Recargo urgencia +30%", desc:"Servicio express - el trabajador te prioriza",
                amount:"+"+fmt(Math.round(subtotal*0.30)), color:"#92400E", bg:"#FEF3C7"},
               {active:scheduledDiscount, set:setScheduledDiscount, disabled:modo!=="programar",
-               icon:"📅", label:"Descuento puntualidad -10%", desc:"Por agendar con anticipacion",
+               icon:"📅", label:"Reserva anticipada -10%", desc:"El trabajador ofrece este descuento por agendar con anticipacion",
                amount:"-"+fmt(Math.round(subtotal*0.10)), color:"#15803D", bg:"#F0FDF4"},
               {active:repeatDiscount, set:setRepeatDiscount, disabled:false,
                icon:"🔄", label:"Descuento cliente recurrente -5%", desc:"Has contratado a este trabajador antes",
@@ -1221,7 +1221,7 @@ function ConfigureScreen({ matched, setS }) {
                 mobilFee>0?{l:"Movilizacion",v:"+"+fmt(mobilFee)}:null,
                 extTotal>0?{l:"Extras",v:"+"+fmt(extTotal)}:null,
                 expressSurcharge?{l:"Urgencia 30%",v:"+"+fmt(urgAmt),c:"#D97706"}:null,
-                scheduledDiscount?{l:"Desc. puntualidad",v:"-"+fmt(schedDisc),c:"#15803D"}:null,
+                scheduledDiscount?{l:"Reserva anticipada",v:"-"+fmt(schedDisc),c:"#15803D"}:null,
                 repeatDiscount?{l:"Desc. recurrente",v:"-"+fmt(repDisc),c:"#1D4ED8"}:null,
                 {l:"Comision Chamba 10%",v:fmt(chambaFee),g:true},
               ].filter(Boolean).map((row,i)=>(
@@ -2801,6 +2801,51 @@ function ServiceDetailScreen({ service, setS }) {
                 <span>{l}</span><span>{v}</span>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      <div style={{background:T.white,marginBottom:8,padding:"16px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:svc.earlyDiscount?.enabled?12:0}}>
+          <div style={{flex:1}}>
+            <p style={{fontWeight:700,fontSize:14,margin:"0 0 3px"}}>Descuento por reserva anticipada</p>
+            <p style={{color:T.gray3,fontSize:12,margin:0}}>El empleador obtiene descuento si agenda con anticipacion</p>
+          </div>
+          <div onClick={()=>setSvc(s=>({...s,earlyDiscount:{...s.earlyDiscount,enabled:!s.earlyDiscount?.enabled}}))}
+            style={{width:44,height:26,borderRadius:13,background:svc.earlyDiscount?.enabled?T.lime:T.gray4,cursor:"pointer",position:"relative",transition:"all 0.2s",flexShrink:0,marginLeft:12}}>
+            <div style={{position:"absolute",top:3,left:svc.earlyDiscount?.enabled?22:3,width:20,height:20,borderRadius:10,background:T.white,boxShadow:"0 1px 4px rgba(0,0,0,0.2)",transition:"all 0.2s"}}/>
+          </div>
+        </div>
+        {svc.earlyDiscount?.enabled && (
+          <div style={{background:T.limeL,borderRadius:12,padding:"12px 14px"}}>
+            <div style={{marginBottom:12}}>
+              <p style={{fontSize:12,fontWeight:700,color:T.gray2,margin:"0 0 8px",textTransform:"uppercase"}}>Porcentaje de descuento</p>
+              <div style={{display:"flex",gap:6}}>
+                {[5,10,15,20].map(pct=>(
+                  <div key={pct} onClick={()=>setSvc(s=>({...s,earlyDiscount:{...s.earlyDiscount,pct}}))}
+                    style={{flex:1,background:svc.earlyDiscount?.pct===pct?T.lime:T.white,border:"1.5px solid "+(svc.earlyDiscount?.pct===pct?T.lime:T.border),borderRadius:10,padding:"8px 4px",textAlign:"center",cursor:"pointer"}}>
+                    <span style={{fontSize:13,fontWeight:700,color:svc.earlyDiscount?.pct===pct?T.green:T.gray2}}>{pct}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p style={{fontSize:12,fontWeight:700,color:T.gray2,margin:"0 0 8px",textTransform:"uppercase"}}>Minimo de dias de anticipacion</p>
+              <div style={{display:"flex",gap:6}}>
+                {[{v:1,l:"1 dia"},{v:2,l:"2 dias"},{v:3,l:"3 dias"},{v:7,l:"1 semana"}].map(opt=>(
+                  <div key={opt.v} onClick={()=>setSvc(s=>({...s,earlyDiscount:{...s.earlyDiscount,minDays:opt.v}}))}
+                    style={{flex:1,background:svc.earlyDiscount?.minDays===opt.v?T.black:T.white,border:"1.5px solid "+(svc.earlyDiscount?.minDays===opt.v?T.black:T.border),borderRadius:10,padding:"8px 4px",textAlign:"center",cursor:"pointer"}}>
+                    <span style={{fontSize:11,fontWeight:700,color:svc.earlyDiscount?.minDays===opt.v?T.white:T.gray2}}>{opt.l}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{background:T.white,borderRadius:10,padding:"10px 12px",marginTop:10,display:"flex",gap:8}}>
+              <span>💡</span>
+              <p style={{fontSize:11,color:T.green,margin:0,lineHeight:1.5}}>
+                Si el empleador agenda con {svc.earlyDiscount?.minDays} dia{svc.earlyDiscount?.minDays>1?"s":""} o mas de anticipacion, recibe {svc.earlyDiscount?.pct}% de descuento sobre el precio base. Tu decides activarlo o no.
+              </p>
+            </div>
           </div>
         )}
       </div>
