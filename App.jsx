@@ -202,13 +202,13 @@ function BottomNav({ active, go, role }) {
     ? [{id:"feed",icon:"💼",label:"Ofertas"},{id:"search",icon:"🗺",label:"Explorar"},{id:"post",icon:"＋",label:"Publicar"},{id:"agenda",icon:"📅",label:"Agenda"},{id:"profile",icon:"👤",label:"Perfil"}]
     : [{id:"feed",icon:"🏠",label:"Inicio"},{id:"search",icon:"🗺",label:"Explorar"},{id:"post",icon:"＋",label:"Publicar"},{id:"agenda",icon:"📅",label:"Agenda"},{id:"profile",icon:"👤",label:"Perfil"}];
   return (
-    <div style={{position:"absolute",bottom:0,left:0,right:0,height:78,background:role==="worker"?"rgba(240,253,244,0.97)":"rgba(10,22,40,0.97)",backdropFilter:"blur(20px)",borderTop:"0.5px solid "+(role==="worker"?T.limeD:"rgba(255,255,255,0.1)"),display:"flex",alignItems:"flex-start",justifyContent:"space-around",paddingTop:10,zIndex:50}}>
+    <div style={{position:"absolute",bottom:0,left:0,right:0,height:78,background:role==="worker"?"rgba(240,253,244,0.97)":"rgba(255,255,255,0.97)",backdropFilter:"blur(20px)",borderTop:"0.5px solid "+(role==="worker"?T.limeD:T.border),display:"flex",alignItems:"flex-start",justifyContent:"space-around",paddingTop:10,zIndex:50}}>
       {tabs.map(t=>(
         <div key={t.id} onClick={()=>go(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,cursor:"pointer",padding:"4px 8px"}}>
-          <div style={{width:42,height:42,borderRadius:t.id==="post"?21:12,background:t.id==="post"?T.lime:active===t.id?(role==="worker"?T.limeL:"rgba(168,212,41,0.15)"):"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:t.id==="post"?22:20}}>
-            <span style={{opacity:active===t.id||t.id==="post"?1:role==="worker"?0.45:0.35}}>{t.icon}</span>
+          <div style={{width:42,height:42,borderRadius:t.id==="post"?21:12,background:t.id==="post"?T.lime:active===t.id?T.limeL:"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:t.id==="post"?22:20}}>
+            <span style={{opacity:active===t.id||t.id==="post"?1:0.45}}>{t.icon}</span>
           </div>
-          <span style={{fontSize:9,fontWeight:700,color:active===t.id?T.limeD:role==="worker"?T.gray2:"rgba(255,255,255,0.4)"}}>{t.label}</span>
+          <span style={{fontSize:9,fontWeight:700,color:active===t.id?T.limeD:T.gray3}}>{t.label}</span>
         </div>
       ))}
     </div>
@@ -2123,7 +2123,6 @@ function NotificationsScreen({ setS }) {
 
 // -- PROFILE SCREEN --------------------------------------------
 function EmployerProfile({ setS, setRole, matches }) {
-  const BG_EMP = "#1A1A2E";
   const HIRED = [
     {id:1,worker:"Ana Martinez",service:"Peluquera a domicilio",date:"Vie 24 Mayo",price:15000,rating:5,avatar:"https://i.pravatar.cc/150?img=47",color:"#BE185D"},
     {id:2,worker:"Carlos Mendez",service:"Jardinero",date:"Mie 22 Mayo",price:12000,rating:5,avatar:"https://i.pravatar.cc/150?img=11",color:"#22C55E"},
@@ -2148,7 +2147,7 @@ function EmployerProfile({ setS, setRole, matches }) {
 
       {/* Cover + avatar + info */}
       <div style={{background:"#F8FAF5",marginBottom:8,borderBottom:"0.5px solid #D4E6C3"}}>
-        <div style={{height:100,background:"linear-gradient(135deg,"+T.green+",#2D5A00)",position:"relative"}}>
+        <div style={{height:80,background:"linear-gradient(180deg,"+T.green+",#2D5A00)",position:"relative"}}>
           <div style={{position:"absolute",bottom:-28,left:16}}>
             <div style={{width:64,height:64,borderRadius:32,overflow:"hidden",border:"3px solid "+T.white,background:T.gray4}}>
               <Img src={JULIA.avatar} style={{width:"100%",height:"100%"}}/>
@@ -2178,7 +2177,7 @@ function EmployerProfile({ setS, setRole, matches }) {
           </div>
 
           {/* Stats */}
-          <div style={{display:"flex",gap:0,borderTop:"0.5px solid rgba(255,255,255,0.1)",paddingTop:12}}>
+          <div style={{display:"flex",gap:0,borderTop:"0.5px solid "+T.border,paddingTop:12}}>
             {[
               {v:(matches||[]).length||4,l:"chambas"},
               {v:"$107k",l:"gastado"},
@@ -2194,9 +2193,9 @@ function EmployerProfile({ setS, setRole, matches }) {
       </div>
 
       {/* Chamba Wallet */}
-      <div style={{background:"#111827",marginBottom:2,padding:"14px 16px"}}>
+      <div style={{background:T.white,marginBottom:8,padding:"14px 16px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <span style={{fontWeight:800,fontSize:15,color:T.white}}>💳 Chamba Wallet</span>
+          <span style={{fontWeight:800,fontSize:15}}>💳 Chamba Wallet</span>
           <span style={{background:T.limeL,color:T.limeD,fontSize:11,fontWeight:700,borderRadius:20,padding:"3px 10px"}}>Activa</span>
         </div>
         <div style={{background:"linear-gradient(135deg,"+T.green+",#2D5A00)",borderRadius:16,padding:"16px",marginBottom:12}}>
@@ -2219,9 +2218,9 @@ function EmployerProfile({ setS, setRole, matches }) {
       </div>
 
       {/* Trabajadores favoritos */}
-      <div style={{background:"#111827",marginBottom:2,padding:"14px 16px"}}>
+      <div style={{background:T.white,marginBottom:8,padding:"14px 16px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <span style={{fontWeight:800,fontSize:15,color:T.white}}>❤️ Mis favoritos</span>
+          <span style={{fontWeight:800,fontSize:15}}>❤️ Mis favoritos</span>
           <span onClick={()=>setS("search")} style={{color:T.limeD,fontSize:12,fontWeight:600,cursor:"pointer"}}>Buscar mas</span>
         </div>
         <div style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:4}}>
@@ -2240,9 +2239,9 @@ function EmployerProfile({ setS, setRole, matches }) {
       </div>
 
       {/* Historial de chambas */}
-      <div style={{background:"#111827",marginBottom:2,padding:"14px 16px"}}>
+      <div style={{background:T.white,marginBottom:8,padding:"14px 16px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <span style={{fontWeight:800,fontSize:15,color:T.white}}>Chambas contratadas</span>
+          <span style={{fontWeight:800,fontSize:15}}>Chambas contratadas</span>
           <span style={{color:T.gray3,fontSize:12}}>{HIRED.length} este mes</span>
         </div>
         {HIRED.map((h,i)=>(
@@ -2267,8 +2266,8 @@ function EmployerProfile({ setS, setRole, matches }) {
       </div>
 
       {/* Resumen del mes */}
-      <div style={{background:"#111827",padding:"14px 16px"}}>
-        <p style={{fontWeight:800,fontSize:15,margin:"0 0 12px",color:T.white}}>Resumen del mes</p>
+      <div style={{background:T.white,padding:"14px 16px"}}>
+        <p style={{fontWeight:800,fontSize:15,margin:"0 0 12px"}}>Resumen del mes</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {[
             {icon:"💰",label:"Gastado",value:"$107.000",bg:T.limeL,color:T.green},
@@ -3174,7 +3173,7 @@ function AddServiceScreen({ setS, setSelectedService }) {
       <div style={{position:"absolute",inset:0,top:50,bottom:78,overflowY:"auto",background:T.gray5}}>
         <div style={{background:T.lime,borderBottom:"none",padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"sticky",top:0,zIndex:20}}>
           <span style={{fontWeight:800,fontSize:17,color:T.green}}>Mis servicios</span>
-          <button onClick={()=>setView("add")} style={{background:T.green,border:"none",borderRadius:20,padding:"7px 16px",fontSize:13,fontWeight:700,color:T.green,cursor:"pointer"}}>+ Nuevo</button>
+          <button onClick={()=>setView("add")} style={{background:T.lime,border:"none",borderRadius:20,padding:"7px 16px",fontSize:13,fontWeight:700,color:T.green,cursor:"pointer"}}>+ Nuevo</button>
         </div>
         <div style={{background:T.white,marginBottom:8,padding:"14px 16px"}}>
           <div style={{background:T.limeL,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",gap:10,alignItems:"center"}}>
