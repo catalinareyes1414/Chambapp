@@ -47,6 +47,11 @@ const JULIA = {
     {id:"s5",icon:"🎨",active:true,name:"Asesoria de colorimetria",price:45000,cat:"belleza",hours:1.5,earlyDiscount:{enabled:true,pct:10,minDays:7},desc:"Asesoria personal de colorimetria. Descubre los colores que mejor te favorecen segun tu tono de piel.",myMaterials:["Muestras de telas","Guia de colores","Paleta de temporada"],clientMaterials:[]},
   ],
   highlights:[
+    {id:"hl0",name:"Antes/Despues",icon:"♻",color:"#15803D",stories:[
+      {before:"https://images.unsplash.com/photo-1527515637462-cff94edd0e52?w=600&q=80",after:"https://images.unsplash.com/photo-1556909114-44e3e9699e2b?w=600&q=80",caption:"Cocina Providencia - 2 horas de trabajo"},
+      {before:"https://images.unsplash.com/photo-1583845112239-97ef1341b271?w=600&q=80",after:"https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&q=80",caption:"Bano completo - productos profesionales"},
+      {before:"https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=600&q=80",after:"https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600&q=80",caption:"Living y comedor - aseo profundo"},
+    ]},
     {id:"hl1",name:"Aseos",icon:"🧹",color:"#0EA5E9",stories:[
       {src:"https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80",caption:"Aseo profundo depto Providencia"},
       {src:"https://images.unsplash.com/photo-1527515637462-cff94edd0e52?w=600&q=80",caption:"Antes y despues cocina"},
@@ -1019,7 +1024,7 @@ function ConfigureScreen({ matched, setS }) {
   const gross     = subtotal + urgAmt - schedDisc - repDisc;
   const chambaFee = Math.round(gross * 0.10);
   const total     = gross + chambaFee;
-  const workerNet = Math.round(gross * 0.90);
+  const workerNet = Math.round(gross * 0.8925);
 
   const canNext = step===0
     ? (modo==="ahora" || (selectedDay && selectedTime))
@@ -1494,7 +1499,7 @@ function ConfirmScreen({ matched, setS, setMatches }) {
           <p style={{color:T.gray2,textAlign:"center",fontSize:14,margin:"0 0 20px",lineHeight:1.5}}>Pago liberado - Calificaciones publicadas</p>
           <div style={{width:"100%",background:T.gray5,borderRadius:16,padding:"16px",marginBottom:20}}>
             {[
-              {icon:"💰",l:"Pago liberado a "+workerName,v:fmt(Math.round(price*0.9))},
+              {icon:"💰",l:"Pago liberado a "+workerName,v:fmt(Math.round(price*0.8925))},
               {icon:"⭐",l:"Tu calificacion publicada",v:rating+"/5 estrellas"},
               {icon:"📄",l:"Boleta emitida al SII",v:"Automatico"},
             ].map((s,i,arr)=>(
@@ -2238,14 +2243,14 @@ function EmployerProfile({ setS, setRole, matches }) {
         </div>
       </div>
 
-      {/* Historial de chambas */}
+      {/* Historial de chambas - vista previa */}
       <div style={{background:T.white,marginBottom:8,padding:"14px 16px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <span style={{fontWeight:800,fontSize:15}}>Chambas contratadas</span>
-          <span style={{color:T.gray3,fontSize:12}}>{HIRED.length} este mes</span>
+          <span style={{fontWeight:800,fontSize:15}}>Ultimas chambas</span>
+          <span onClick={()=>setS("agenda")} style={{color:T.limeD,fontSize:12,fontWeight:700,cursor:"pointer"}}>Ver agenda completa</span>
         </div>
-        {HIRED.map((h,i)=>(
-          <div key={h.id} style={{display:"flex",gap:12,alignItems:"center",padding:"12px 0",borderBottom:HIRED.length-1>i?"0.5px solid "+T.border:"none"}}>
+        {HIRED.slice(0,2).map((h,i,arr)=>(
+          <div key={h.id} style={{display:"flex",gap:12,alignItems:"center",padding:"12px 0",borderBottom:arr.length-1>i?"0.5px solid "+T.border:"none"}}>
             <div style={{width:48,height:48,borderRadius:24,overflow:"hidden",border:"2px solid "+h.color+"33",flexShrink:0}}>
               <Img src={h.avatar} style={{width:"100%",height:"100%"}}/>
             </div>
@@ -2263,6 +2268,9 @@ function EmployerProfile({ setS, setRole, matches }) {
             </div>
           </div>
         ))}
+        <button onClick={()=>setS("agenda")} style={{width:"100%",background:T.gray5,border:"none",borderRadius:12,padding:"11px",fontSize:13,fontWeight:600,color:T.gray2,cursor:"pointer",marginTop:10}}>
+          Ver historial completo en Agenda
+        </button>
       </div>
 
       {/* Resumen del mes */}
@@ -2281,6 +2289,29 @@ function EmployerProfile({ setS, setRole, matches }) {
               <div style={{fontWeight:800,fontSize:15,color:s.color}}>{s.value}</div>
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BeforeAfterSplit({ before, after }) {
+  return (
+    <div style={{position:"relative",width:"100%",height:"100%",display:"flex"}}>
+      <div style={{flex:1,position:"relative",overflow:"hidden",borderRight:"2px solid #fff"}}>
+        <Img src={before} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+        <div style={{position:"absolute",top:70,left:0,right:0,display:"flex",justifyContent:"center"}}>
+          <div style={{background:"rgba(0,0,0,0.65)",borderRadius:8,padding:"4px 14px"}}>
+            <span style={{color:"#fff",fontSize:12,fontWeight:800,letterSpacing:0.5}}>ANTES</span>
+          </div>
+        </div>
+      </div>
+      <div style={{flex:1,position:"relative",overflow:"hidden"}}>
+        <Img src={after} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+        <div style={{position:"absolute",top:70,left:0,right:0,display:"flex",justifyContent:"center"}}>
+          <div style={{background:T.lime,borderRadius:8,padding:"4px 14px"}}>
+            <span style={{color:T.green,fontSize:12,fontWeight:800,letterSpacing:0.5}}>DESPUES</span>
+          </div>
         </div>
       </div>
     </div>
@@ -2335,15 +2366,19 @@ function StoryViewer({ highlight, onClose }) {
       </div>
       {/* Image */}
       <div style={{flex:1,position:"relative",overflow:"hidden"}}>
-        <Img src={story.src} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 60%,rgba(0,0,0,0.7))"}}/>
+        {story.before && story.after ? (
+          <BeforeAfterSplit before={story.before} after={story.after}/>
+        ) : (
+          <Img src={story.src} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+        )}
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 60%,rgba(0,0,0,0.7))",pointerEvents:"none"}}/>
         {story.caption && (
-          <div style={{position:"absolute",bottom:20,left:16,right:16}}>
+          <div style={{position:"absolute",bottom:20,left:16,right:16,pointerEvents:"none"}}>
             <p style={{color:"#fff",fontSize:15,fontWeight:600,margin:0,textShadow:"0 1px 4px rgba(0,0,0,0.8)"}}>{story.caption}</p>
           </div>
         )}
         {paused && (
-          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none"}}>
             <div style={{width:60,height:60,borderRadius:30,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28}}>
               II
             </div>
@@ -2377,6 +2412,7 @@ function WorkerProfileScreen({ setS, setRole, setSelectedService }) {
   const [activeStory, setActiveStory] = useState(null);
   return (
     <div style={{position:"absolute",inset:0,top:50,bottom:78,overflowY:"auto",background:"#F7FBF0"}}>
+      {activeStory && <StoryViewer highlight={activeStory} onClose={()=>setActiveStory(null)}/>}
       <div style={{background:T.lime,padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:16,fontWeight:800,color:T.green}}>juliamorales</span>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
@@ -2498,6 +2534,14 @@ function WorkerProfileScreen({ setS, setRole, setSelectedService }) {
           <p style={{color:"rgba(255,255,255,0.5)",fontSize:12,margin:0}}>Toca para ver tu certificado o re-verificar</p>
         </div>
         <span style={{color:T.lime,fontSize:14,fontWeight:700}}>ver</span>
+      </div>
+      <div onClick={()=>setS("insignias")} style={{background:T.white,border:"1.5px solid "+T.lime,margin:"0 0 8px",padding:"14px 16px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}}>
+        <div style={{width:44,height:44,borderRadius:22,background:T.limeL,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>🏆</div>
+        <div style={{flex:1}}>
+          <p style={{color:T.dark,fontWeight:800,fontSize:14,margin:"0 0 2px"}}>Premios y metas</p>
+          <p style={{color:T.gray3,fontSize:12,margin:0}}>4 insignias desbloqueadas - Ver progreso SII</p>
+        </div>
+        <span style={{color:T.limeD,fontSize:14,fontWeight:700}}>ver</span>
       </div>
       <div style={{background:T.white,padding:"14px 16px"}}>
         <p style={{fontWeight:800,fontSize:15,margin:"0 0 12px"}}>Resumen de pagos</p>
@@ -2916,6 +2960,19 @@ function VerifyScreen({ setS }) {
 }
 
 function InsigniasScreen({ setS }) {
+  const totalJobs = 87;
+  const currentTier = "Plata"; // Bronce 0-10, Plata 10-50, Oro 50-100, Platino 100+
+
+  const NIVELES = [
+    {nombre:"Bronce",min:0,max:10,comision:10,color:"#A87C4F",bg:"#FDF4ED"},
+    {nombre:"Plata",min:10,max:50,comision:10,color:"#71717A",bg:"#F4F4F5"},
+    {nombre:"Oro",min:50,max:100,comision:8,color:"#CA8A04",bg:"#FEF9C3"},
+    {nombre:"Platino",min:100,max:999,comision:7,color:"#0EA5E9",bg:"#EFF6FF"},
+  ];
+  const nivelActual = NIVELES.find(n=>totalJobs>=n.min && totalJobs<n.max) || NIVELES[NIVELES.length-1];
+  const siguienteNivel = NIVELES[NIVELES.indexOf(nivelActual)+1];
+  const progPct = siguienteNivel ? Math.round(((totalJobs-nivelActual.min)/(siguienteNivel.min-nivelActual.min))*100) : 100;
+
   const BADGES = [
     {icon:"✅",name:"Verificado",desc:"Identidad confirmada",earned:true},
     {icon:"⭐",name:"Top Rated",desc:"Rating sobre 4.8",earned:true},
@@ -2924,22 +2981,96 @@ function InsigniasScreen({ setS }) {
     {icon:"🏆",name:"100 chambas",desc:"Completaste 100 trabajos",earned:false},
     {icon:"💎",name:"Premium",desc:"Perfil destacado",earned:false},
   ];
+
   return (
-    <div style={{position:"absolute",inset:0,top:50,bottom:0,overflowY:"auto",background:T.white}}>
-      <div style={{borderBottom:"0.5px solid "+T.border,padding:"12px 16px",display:"flex",alignItems:"center",gap:12}}>
+    <div style={{position:"absolute",inset:0,top:50,bottom:0,overflowY:"auto",background:T.gray5}}>
+      <div style={{background:T.white,borderBottom:"0.5px solid "+T.border,padding:"12px 16px",display:"flex",alignItems:"center",gap:12}}>
         <button onClick={()=>setS("profile")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer"}}>Atras</button>
-        <span style={{fontSize:16,fontWeight:700}}>Metas e insignias</span>
+        <span style={{fontSize:16,fontWeight:700}}>Premios y metas</span>
       </div>
-      <div style={{padding:"16px"}}>
-        <div style={{background:T.green,borderRadius:16,padding:"16px",marginBottom:20,textAlign:"center"}}>
-          <p style={{color:"rgba(255,255,255,0.6)",fontSize:12,margin:"0 0 4px"}}>Progreso anual SII</p>
-          <p style={{color:T.lime,fontWeight:900,fontSize:28,margin:"0 0 4px"}}>$122.000</p>
-          <p style={{color:"rgba(255,255,255,0.5)",fontSize:11,margin:0}}>de $8.700.000 limite anual</p>
-          <div style={{background:"rgba(255,255,255,0.1)",borderRadius:6,height:8,marginTop:10,overflow:"hidden"}}>
+
+      {/* Nivel actual con beneficios reales */}
+      <div style={{background:"linear-gradient(135deg,"+T.green+",#2D5A00)",padding:"20px 16px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+          <div>
+            <p style={{color:"rgba(255,255,255,0.5)",fontSize:11,margin:"0 0 2px",textTransform:"uppercase"}}>Tu nivel actual</p>
+            <p style={{color:T.lime,fontWeight:900,fontSize:26,margin:0}}>{nivelActual.nombre} 🥈</p>
+          </div>
+          <div style={{textAlign:"right"}}>
+            <p style={{color:"rgba(255,255,255,0.5)",fontSize:11,margin:"0 0 2px"}}>Chambas completadas</p>
+            <p style={{color:T.white,fontWeight:800,fontSize:22,margin:0}}>{totalJobs}</p>
+          </div>
+        </div>
+        {siguienteNivel && (
+          <div>
+            <div style={{height:8,borderRadius:4,background:"rgba(255,255,255,0.15)",overflow:"hidden",marginBottom:6}}>
+              <div style={{width:progPct+"%",height:"100%",borderRadius:4,background:T.lime}}/>
+            </div>
+            <p style={{color:"rgba(255,255,255,0.6)",fontSize:11,margin:0}}>
+              {siguienteNivel.min-totalJobs} chambas mas para llegar a <strong style={{color:T.lime}}>{siguienteNivel.nombre}</strong>
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Beneficios actuales */}
+      <div style={{background:T.white,margin:"8px 0",padding:"16px"}}>
+        <p style={{fontWeight:800,fontSize:15,margin:"0 0 12px"}}>Tus beneficios ahora</p>
+        {[
+          {icon:"💰",title:"Comision Chamba: "+nivelActual.comision+"%",desc:"Pagas menos comision que un perfil nuevo (10%)",active:true},
+          {icon:"📈",title:"Prioridad en busquedas",desc:"Tu perfil aparece mas arriba en resultados de Explorar",active:nivelActual.nombre!=="Bronce"},
+          {icon:"⚡",title:"Acceso anticipado a urgentes",desc:"Ves ofertas de ultimo minuto 5 min antes que otros",active:nivelActual.nombre==="Oro"||nivelActual.nombre==="Platino"},
+        ].map((b,i,arr)=>(
+          <div key={i} style={{display:"flex",gap:12,alignItems:"flex-start",padding:"12px 0",borderBottom:arr.length-1>i?"0.5px solid "+T.border:"none",opacity:b.active?1:0.4}}>
+            <div style={{width:38,height:38,borderRadius:19,background:b.active?T.limeL:T.gray5,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{b.icon}</div>
+            <div style={{flex:1}}>
+              <p style={{fontWeight:700,fontSize:13,margin:"0 0 2px",color:b.active?T.dark:T.gray3}}>{b.title}</p>
+              <p style={{fontSize:12,color:T.gray3,margin:0,lineHeight:1.4}}>{b.desc}</p>
+            </div>
+            {b.active && <span style={{color:T.limeD,fontSize:12,fontWeight:700,flexShrink:0}}>Activo</span>}
+          </div>
+        ))}
+      </div>
+
+      {/* Tabla de niveles */}
+      <div style={{background:T.white,margin:"8px 0",padding:"16px"}}>
+        <p style={{fontWeight:800,fontSize:15,margin:"0 0 12px"}}>Niveles y comision</p>
+        {NIVELES.map((n,i,arr)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:arr.length-1>i?"0.5px solid "+T.border:"none",
+            background:n.nombre===nivelActual.nombre?T.limeL:"transparent",borderRadius:n.nombre===nivelActual.nombre?10:0,
+            paddingLeft:n.nombre===nivelActual.nombre?10:0,paddingRight:n.nombre===nivelActual.nombre?10:0}}>
+            <div style={{width:36,height:36,borderRadius:18,background:n.bg,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:13,color:n.color,flexShrink:0}}>
+              {n.min}+
+            </div>
+            <div style={{flex:1}}>
+              <p style={{fontWeight:700,fontSize:13,margin:0,color:T.dark}}>{n.nombre}{n.nombre===nivelActual.nombre?" (tu nivel)":""}</p>
+              <p style={{fontSize:11,color:T.gray3,margin:0}}>{n.min}-{n.max===999?"+":n.max} chambas</p>
+            </div>
+            <span style={{fontWeight:800,fontSize:14,color:T.limeD}}>{n.comision}% comision</span>
+          </div>
+        ))}
+        <div style={{background:"#EFF6FF",borderRadius:10,padding:"10px 12px",marginTop:10,display:"flex",gap:8}}>
+          <span style={{fontSize:14}}>💡</span>
+          <p style={{fontSize:11,color:"#1D4ED8",margin:0,lineHeight:1.5}}>La comision baja se aplica automaticamente sobre cada pago. A mas nivel, mas te quedas tu.</p>
+        </div>
+      </div>
+
+      {/* Progreso SII */}
+      <div style={{background:T.white,margin:"8px 0",padding:"16px"}}>
+        <p style={{fontWeight:800,fontSize:15,margin:"0 0 12px"}}>Progreso anual SII</p>
+        <div style={{background:T.gray5,borderRadius:14,padding:"14px"}}>
+          <p style={{color:T.gray3,fontSize:11,margin:"0 0 4px"}}>Facturado este ano</p>
+          <p style={{color:T.green,fontWeight:900,fontSize:24,margin:"0 0 8px"}}>$122.000</p>
+          <p style={{color:T.gray3,fontSize:11,margin:"0 0 8px"}}>de $8.700.000 limite anual boleta de honorarios</p>
+          <div style={{background:"rgba(0,0,0,0.06)",borderRadius:6,height:8,overflow:"hidden"}}>
             <div style={{width:"1.4%",height:"100%",background:T.lime,borderRadius:6}}/>
           </div>
         </div>
-        <p style={{fontWeight:800,fontSize:16,margin:"0 0 12px"}}>Tus insignias</p>
+      </div>
+
+      {/* Insignias */}
+      <div style={{background:T.white,margin:"8px 0",padding:"16px 16px 24px"}}>
+        <p style={{fontWeight:800,fontSize:15,margin:"0 0 12px"}}>Tus insignias</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
           {BADGES.map((b,i)=>(
             <div key={i} style={{background:b.earned?T.limeL:T.gray5,borderRadius:16,padding:"16px 12px",textAlign:"center",opacity:b.earned?1:0.5}}>
@@ -3016,7 +3147,7 @@ function ServiceDetailScreen({ service, setS }) {
         {!editing && (
           <div style={{margin:"0 16px 16px",background:T.limeL,borderRadius:12,padding:"12px 14px"}}>
             <p style={{fontSize:12,fontWeight:700,color:T.green,margin:"0 0 8px"}}>💰 Desglose del pago</p>
-            {[["Precio bruto",fmt(svc.price)],["Comision Chamba (10%)","-"+fmt(Math.round(svc.price*0.1))],["Tu recibes",fmt(Math.round(svc.price*0.9))]].map(([l,v],i)=>(
+            {[["Precio bruto",fmt(svc.price)],["Retencion SII boleta (10.75%)","-"+fmt(Math.round(svc.price*0.1075))],["Tu recibes",fmt(Math.round(svc.price*0.8925))]].map(([l,v],i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:13,color:T.green,fontWeight:i===2?800:400,borderTop:i===2?"1px solid "+T.lime:undefined,paddingTop:i===2?6:0,marginBottom:i < 2?4:0}}>
                 <span>{l}</span><span>{v}</span>
               </div>
